@@ -1,0 +1,73 @@
+* {
+    box-sizing: border-box;
+    margin:0;
+    padding:0;
+}
+
+.navbar{
+    background: rgb(6,6,6);
+    background: linear-gradient(86deg, rgba(6,6,6,1) 0%, rgba(22,71,35,1) 50%, rgba(31,255,0,1) 100%);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.navbar__title{
+    color: white;
+    margin-right: auto;
+}
+
+.container{
+    padding: 40px;
+}
+
+.form{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 40px;
+    gap: 17px;
+    margin-bottom: 20px;
+}
+
+.form__text{
+    border-radius: 5px;
+}
+
+.form__button{
+    background: rgb(6,6,6);
+    background: linear-gradient(86deg, rgba(6,6,6,1) 0%, rgba(22,71,35,1) 50%, rgba(31,255,0,1) 100%);
+    color: white;
+    grid-column: 1 / -1;
+    border: none;
+    border-radius: 5px;
+}
+
+
+.meme__image{
+    width: 50%;
+    border-color: darkgreen;
+    border-width: 5px;
+}
+
+.meme__text {
+    width: 80%;
+    text-align: center;
+    font-family: impact, sans-serif;
+    font-size: 2em;
+    text-transform: uppercase;
+    color: white;
+    letter-spacing: 1px;
+    text-shadow:
+        2px 2px 0 #000,
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        0 2px 0 #000,
+        2px 0 0 #000,
+        0 -2px 0 #000,
+        -2px 0 0 #000,
+        2px 2px 5px #000;
+    /* z-index: 50; */
+}
