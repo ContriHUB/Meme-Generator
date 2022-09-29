@@ -4,6 +4,8 @@
 
 - use [BEM](https://www.freecodecamp.org/news/css-naming-conventions-that-will-save-you-hours-of-debugging-35cea737d849/) naming convention for the CSS class naming
 
+- <strong>add comments to make it easier for others to understand</strong>
+
 - write modular code and logical division of components in React
 
 - try to make components more reusable
