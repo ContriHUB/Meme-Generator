@@ -39,6 +39,14 @@ export default function Meme() {
 			[name]: value,
 		}));
 	}
+	//this is for clearing content
+	function clearHandler() {
+		setMeme({
+			topText: "",
+			bottomText: "",
+			url: "",
+		});
+	}
 	return (
 		<div className="container">
 			<div className="form">
@@ -47,15 +55,22 @@ export default function Meme() {
 					type="text"
 					placeholder="text1"
 					name="topText"
+					value={meme.topText}
+					onChange={handleChange}
 				/>
 				<input
 					className="form__text"
 					type="text"
 					placeholder="text2"
 					name="bottomText"
+					value={meme.bottomText}
+					onChange={handleChange}
 				/>
 				<button className="form__button" onClick={getRandomMeme}>
 					Generate Meme
+				</button>
+				<button className="form__button" onClick={clearHandler}>
+					Clear
 				</button>
 			</div>
 			<div className="meme">
