@@ -39,6 +39,24 @@ export default function Meme() {
 			[name]: value,
 		}));
 	}
+
+	// this is for uploading the image from the PC
+	function uploadImage(event){
+		console.log(event.target.files[0].type);
+
+		// accepts image in the form of PNG/JPG/JPEG
+		if (event.target.files[0].type === "image/png" || event.target.files[0].type === "image/jpg" || event.target.files[0].type === "image/jpeg"){
+			setMeme((prev) => ({
+				...prev,
+				url: URL.createObjectURL(event.target.files[0])
+			}))
+		}
+		else{
+			// Alert is shown when there is incorrect file chosen
+			alert("Please upload the image in the correct format (PNG/JPEG/JPG)!")
+		}
+	}
+
 	return (
 		<div className="container">
 			<div className="form">
@@ -57,6 +75,10 @@ export default function Meme() {
 				<button className="form__button" onClick={getRandomMeme}>
 					Generate Meme
 				</button>
+				<label for="image-upload" className="form__button upload_image__button">
+					Upload Meme Image
+				</label>
+				<input accept="image/*" id="image-upload" type="file" onChange={uploadImage} />
 			</div>
 			<div className="meme">
 				{meme.url && <img className="meme__image" src={meme.url} />}
