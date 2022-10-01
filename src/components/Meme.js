@@ -23,8 +23,6 @@ export default function Meme() {
 		url: "",
 	});
 
-	const [file, setFile] = useState()
-
 	function getRandomMeme() {
 		let index = Math.floor(Math.random() * allMemes.length);
 		setMeme((prev) => ({
@@ -47,7 +45,7 @@ export default function Meme() {
 		console.log(event.target.files[0].type);
 
 		// accepts image in the form of PNG/JPG/JPEG
-		if (event.target.files[0].type == "image/png" || event.target.files[0].type == "image/jpg" || event.target.files[0].type == "image/jpeg"){
+		if (event.target.files[0].type === "image/png" || event.target.files[0].type === "image/jpg" || event.target.files[0].type === "image/jpeg"){
 			setMeme((prev) => ({
 				...prev,
 				url: URL.createObjectURL(event.target.files[0])
@@ -80,7 +78,7 @@ export default function Meme() {
 				<label for="image-upload" className="form__button upload_image__button">
 					Upload Meme Image
 				</label>
-				<input id="image-upload" type="file" onChange={uploadImage} />
+				<input accept="image/*" id="image-upload" type="file" onChange={uploadImage} />
 			</div>
 			<div className="meme">
 				{meme.url && <img className="meme__image" src={meme.url} />}
