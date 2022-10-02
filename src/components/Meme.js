@@ -40,16 +40,40 @@ export default function Meme() {
 		}));
 	}
 
+	//this is for handling the reset functionality
+	function handleReset() {
+		setMeme({
+			topText: "",
+			bottomText: "",
+			url: ""
+		});
+	}
+
+	//this is to handle input change
+	function handleInput1Change(event) {
+		setMeme( (prevMeme) => ({
+			...prevMeme,
+			topText: event.target.value
+		}));
+	}
+	function handleInput2Change(event) {
+		setMeme( (prevMeme) => ({
+			...prevMeme,
+			bottomText: event.target.value
+		}));
+	}
+
 	// this is for uploading the image from the PC
 	function uploadImage(event){
+		let fileURL = event.target.files[0];
 		console.log(event.target.files[0].type);
-
 		// accepts image in the form of PNG/JPG/JPEG
 		if (event.target.files[0].type === "image/png" || event.target.files[0].type === "image/jpg" || event.target.files[0].type === "image/jpeg"){
 			setMeme((prev) => ({
 				...prev,
-				url: URL.createObjectURL(event.target.files[0])
+				url: URL.createObjectURL(fileURL)
 			}))
+			event.target.value = null;
 		}
 		else{
 			// Alert is shown when there is incorrect file chosen
@@ -63,14 +87,18 @@ export default function Meme() {
 				<input
 					className="form__text"
 					type="text"
+					value={meme.topText}
 					placeholder="text1"
 					name="topText"
-				/>
+					onChange={handleInput1Change}
+					/>
 				<input
 					className="form__text"
 					type="text"
+					value={meme.bottomText}
 					placeholder="text2"
 					name="bottomText"
+					onChange={handleInput2Change}
 				/>
 				<button className="form__button" onClick={getRandomMeme}>
 					Generate Meme
@@ -79,9 +107,12 @@ export default function Meme() {
 					Upload Meme Image
 				</label>
 				<input accept="image/*" id="image-upload" type="file" onChange={uploadImage} />
+				<button className="form__button" onClick={handleReset}>
+					Reset Meme
+				</button>
 			</div>
 			<div className="meme">
-				{meme.url && <img className="meme__image" src={meme.url} />}
+				{meme.url && <img className="meme__image" src={meme.url} alt="meme"/>}
 				{meme.url && <h2 className="meme__text">{meme.topText}</h2>}
 				{meme.url && <h2 className="meme__text">{meme.bottomText}</h2>}
 			</div>
