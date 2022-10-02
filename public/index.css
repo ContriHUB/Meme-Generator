@@ -31,8 +31,22 @@
     margin-bottom: 20px;
 }
 
+.form__text-container{
+    display: flex; 
+    flex-direction: row; 
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem; 
+    margin-left: 0.75rem; 
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; 
+}
+
 .form__text{
     border-radius: 5px;
+    padding: 10px;
+    margin-right: 1rem;
+    width: 100%;
 }
 
 .form__button{
@@ -44,6 +58,41 @@
     border-radius: 5px;
 }
 
+.form__button--secondary{
+    border-radius: 5px;
+    padding: 10px; 
+    width: 69%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.delete__svg--allowed{
+    padding-left: 0.5rem;
+    padding-right: 0.5rem; 
+    background-color: #2b2b2b; 
+    --bg-opacity: 0; 
+    flex-shrink: 0; 
+    width: 2.5rem; 
+    height: 2.5rem; 
+    border-radius: 9999px; 
+    cursor: pointer; 
+}
+
+.delete__svg--allowed:hover{
+    --bg-opacity: 0.25;       
+}
+
+.delete__svg--not-allowed{
+    padding-left: 0.5rem;
+    padding-right: 0.5rem; 
+    background-color: #2b2b2b; 
+    --bg-opacity: 0; 
+    flex-shrink: 0; 
+    width: 2.5rem; 
+    height: 2.5rem; 
+    border-radius: 9999px; 
+    cursor: not-allowed; 
+}
 
 .meme__image{
     width: 50%;
