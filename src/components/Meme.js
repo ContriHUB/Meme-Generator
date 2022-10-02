@@ -40,6 +40,15 @@ export default function Meme() {
 		}));
 	}
 
+	//this is for handling the reset functionality
+	function handleReset() {
+		setMeme({
+			topText: "",
+			bottomText: "",
+			url: ""
+		});
+	}
+
 	// this is for uploading the image from the PC
 	function uploadImage(event){
 		console.log(event.target.files[0].type);
@@ -79,9 +88,12 @@ export default function Meme() {
 					Upload Meme Image
 				</label>
 				<input accept="image/*" id="image-upload" type="file" onChange={uploadImage} />
+				<button className="form__button" onClick={handleReset}>
+					Reset Meme
+				</button>
 			</div>
 			<div className="meme">
-				{meme.url && <img className="meme__image" src={meme.url} />}
+				{meme.url && <img className="meme__image" src={meme.url} alt="meme"/>}
 				{meme.url && <h2 className="meme__text">{meme.topText}</h2>}
 				{meme.url && <h2 className="meme__text">{meme.bottomText}</h2>}
 			</div>
