@@ -13,7 +13,10 @@ export default function Meme() {
 	useEffect(function () {
 		fetch(api_url)
 			.then((data) => data.json())
-			.then((data) => setAllMemes(data.data.memes));
+			.then((data) => setAllMemes(data.data.memes))
+			.catch((err) => 
+				document.write("<center> <h3>Engine can't understand this code , it's invalid. please check code and reload page </h3> </center> ")			
+			);
 	}, []);
 
 	//this state stores information about the current meme
