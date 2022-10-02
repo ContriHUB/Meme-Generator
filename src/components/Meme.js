@@ -23,6 +23,9 @@ export default function Meme() {
 		url: "",
 	});
 
+	const [text1, setText1] = useState("text1");
+	const [text2, setText2] = useState("text2");
+
 	function getRandomMeme() {
 		let index = Math.floor(Math.random() * allMemes.length);
 		setMeme((prev) => ({
@@ -42,11 +45,23 @@ export default function Meme() {
 
 	//this is for handling the reset functionality
 	function handleReset() {
+		//clear image
 		setMeme({
 			topText: "",
 			bottomText: "",
 			url: ""
 		});
+		//clear texts in the input field
+		setText1("");
+		setText2("");
+	}
+
+	//this is to handle input change
+	function handleInput1Change(event) {
+		setText1(event.target.value);
+	}
+	function handleInput2Change(event) {
+		setText2(event.target.value);
 	}
 
 	// this is for uploading the image from the PC
@@ -72,14 +87,16 @@ export default function Meme() {
 				<input
 					className="form__text"
 					type="text"
-					placeholder="text1"
+					value={text1}
 					name="topText"
+					onChange={handleInput1Change}
 				/>
 				<input
 					className="form__text"
 					type="text"
-					placeholder="text2"
+					value={text2}
 					name="bottomText"
+					onChange={handleInput2Change}
 				/>
 				<button className="form__button" onClick={getRandomMeme}>
 					Generate Meme
