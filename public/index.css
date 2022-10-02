@@ -30,7 +30,12 @@
     gap: 17px;
     margin-bottom: 20px;
 }
-
+ /* handling the responsive code mobile ,table and laptop device  */
+@media  screen and (max-width:768px){
+    .form{
+        grid-template-columns: 1fr;
+    }
+}
 .form__text{
     border-radius: 5px;
 }
