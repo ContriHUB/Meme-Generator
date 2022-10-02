@@ -23,9 +23,6 @@ export default function Meme() {
 		url: "",
 	});
 
-	const [text1, setText1] = useState("text1");
-	const [text2, setText2] = useState("text2");
-
 	function getRandomMeme() {
 		let index = Math.floor(Math.random() * allMemes.length);
 		setMeme((prev) => ({
@@ -45,35 +42,38 @@ export default function Meme() {
 
 	//this is for handling the reset functionality
 	function handleReset() {
-		//clear image
 		setMeme({
 			topText: "",
 			bottomText: "",
 			url: ""
 		});
-		//clear texts in the input field
-		setText1("");
-		setText2("");
 	}
 
 	//this is to handle input change
 	function handleInput1Change(event) {
-		setText1(event.target.value);
+		setMeme( (prevMeme) => ({
+			...prevMeme,
+			topText: event.target.value
+		}));
 	}
 	function handleInput2Change(event) {
-		setText2(event.target.value);
+		setMeme( (prevMeme) => ({
+			...prevMeme,
+			bottomText: event.target.value
+		}));
 	}
 
 	// this is for uploading the image from the PC
 	function uploadImage(event){
+		let fileURL = event.target.files[0];
 		console.log(event.target.files[0].type);
-
 		// accepts image in the form of PNG/JPG/JPEG
 		if (event.target.files[0].type === "image/png" || event.target.files[0].type === "image/jpg" || event.target.files[0].type === "image/jpeg"){
 			setMeme((prev) => ({
 				...prev,
-				url: URL.createObjectURL(event.target.files[0])
+				url: URL.createObjectURL(fileURL)
 			}))
+			event.target.value = null;
 		}
 		else{
 			// Alert is shown when there is incorrect file chosen
@@ -87,14 +87,16 @@ export default function Meme() {
 				<input
 					className="form__text"
 					type="text"
-					value={text1}
+					value={meme.topText}
+					placeholder="text1"
 					name="topText"
 					onChange={handleInput1Change}
-				/>
+					/>
 				<input
 					className="form__text"
 					type="text"
-					value={text2}
+					value={meme.bottomText}
+					placeholder="text2"
 					name="bottomText"
 					onChange={handleInput2Change}
 				/>
