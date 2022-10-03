@@ -1,6 +1,5 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import  '../custom.css';
 
 export default function Meme() {
 	const api_url = "https://api.imgflip.com/get_memes";
@@ -64,6 +63,22 @@ export default function Meme() {
 			...prevMeme,
 			bottomText: event.target.value
 		}));
+	}
+
+	function widthChange(event) {
+		setMeme((prevMeme) => ({
+			...prevMeme,
+			width: event.target.value
+		}));
+		console.log(event.target.value);
+	}
+
+	function rotateChange(event) {
+		setMeme((prevMeme) => ({
+			...prevMeme,
+			rotate: event.target.value,
+		}));
+		console.log(event.target.value);
 	}
 
 	function widthChange(event) {
