@@ -5,7 +5,6 @@ export default function Meme() {
 	const api_url = "https://api.imgflip.com/get_memes";
 	//this is to store all the meme's url returned by the api
 	const [allMemes, setAllMemes] = useState([]);
-
 	//this function run only once on component load
 	//when this component is mounted on page
 	//it makes call to the api
@@ -13,10 +12,7 @@ export default function Meme() {
 	useEffect(function () {
 		fetch(api_url)
 			.then((data) => data.json())
-			.then((data) => setAllMemes(data.data.memes))
-			.catch((err) => 
-				document.write("<center> <h3>Engine can't understand this code , it's invalid. please check code and reload page </h3> </center> ")			
-			);
+			.then((data) => setAllMemes(data.data.memes));
 	}, []);
 
 	//this state stores information about the current meme
@@ -24,6 +20,9 @@ export default function Meme() {
 		topText: "",
 		bottomText: "",
 		url: "",
+		width:"",
+		rotateTop:"",
+		rotateBottom:""
 	});
 
 	function getRandomMeme() {
@@ -34,22 +33,71 @@ export default function Meme() {
 		}));
 	}
 
+	//this is for handling the input
+	function handleChange(event) {
+		const { name, value } = event.target;
+		setMeme((prevMeme) => ({
+			...prevMeme,
+			[name]: value,
+		}));
+	}
+
 	//this is for handling the reset functionality
 	function handleReset() {
 		setMeme({
 			topText: "",
 			bottomText: "",
-			url: ""
+			url: "",
+			width:"",
 		});
 	}
 
 	//this is to handle input change
-	function handleInputChange(event) {
-		const {name, value} = event.target;
+	function handleInput1Change(event) {
 		setMeme( (prevMeme) => ({
 			...prevMeme,
-			[name]: value
-		}) );
+			topText: event.target.value
+		}));
+	}
+	function handleInput2Change(event) {
+		setMeme( (prevMeme) => ({
+			...prevMeme,
+			bottomText: event.target.value
+		}));
+	}
+
+	function widthChange(event) {
+		setMeme((prevMeme) => ({
+			...prevMeme,
+			width: event.target.value
+		}));
+		console.log(event.target.value);
+	}
+
+
+
+	function widthChange(event) {
+		setMeme((prevMeme) => ({
+			...prevMeme,
+			width: event.target.value
+		}));
+		console.log(event.target.value);
+	}
+
+	function rotateTopChange(event) {
+		setMeme((prevMeme) => ({
+			...prevMeme,
+			rotateTop: event.target.value,
+		}));
+		console.log(event.target.value);
+	}
+
+	function rotateBottomChange(event) {
+		setMeme((prevMeme) => ({
+			...prevMeme,
+			rotateBottom: event.target.value,
+		}));
+		console.log(event.target.value);
 	}
 
 	// this is for uploading the image from the PC
@@ -79,20 +127,52 @@ export default function Meme() {
 					value={meme.topText}
 					placeholder="text1"
 					name="topText"
-					onChange={handleInputChange}
+					onChange={handleInput1Change}
 					/>
+
+                <input
+					className="form__text"
+					type="text"
+					value={meme.rotateTop}
+					placeholder="rotate"
+					name="rotate"
+					onChange={rotateTopChange}
+				/>	
+
+
 				<input
 					className="form__text"
 					type="text"
 					value={meme.bottomText}
 					placeholder="text2"
 					name="bottomText"
-					onChange={handleInputChange}
+					onChange={handleInput2Change}
 				/>
+
+                <input
+					className="form__text"
+					type="text"
+					value={meme.rotateBottom}
+					placeholder="rotate"
+					name="rotate"
+					onChange={rotateBottomChange}
+				/>	
+
+                <input
+					className="form__text"
+					type="number"
+					value={meme.width}
+					placeholder="Width"
+					name="width"
+					onChange={widthChange}
+				/>
+
+  
+
 				<button className="form__button" onClick={getRandomMeme}>
 					Generate Meme
 				</button>
-				<label htmlFor="image-upload" className="form__button upload_image__button">
+				<label for="image-upload" className="form__button upload_image__button">
 					Upload Meme Image
 				</label>
 				<input accept="image/*" id="image-upload" type="file" onChange={uploadImage} />
@@ -102,8 +182,8 @@ export default function Meme() {
 			</div>
 			<div className="meme">
 				{meme.url && <img className="meme__image" src={meme.url} alt="meme"/>}
-				{meme.url && <h2 className="meme__text top">{meme.topText}</h2>}
-				{meme.url && <h2 className="meme__text bottom">{meme.bottomText}</h2>}
+				{meme.url && <p className="meme__text top" style={{width:meme.width , transform: "translateX(50%) translateY(50%) rotate("+meme.rotateTop+"deg)"}}>{meme.topText}</p>}
+				{meme.url && <p className="meme__text bottom" style={{width:meme.width , transform: "translateX(50%) translateY(50%) rotate("+meme.rotateBottom+"deg)"}}>{meme.bottomText}</p>}
 			</div>
 		</div>
 	);
