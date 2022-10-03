@@ -139,8 +139,8 @@ export default function Meme() {
 			</div>
 			<div className="meme">
 				{meme.url && <img className="meme__image" src={meme.url} alt="meme"/>
-				{meme.url && <h2 className="meme__text" style={{fontSize:meme.width , transform: "rotate("+meme.rotate+"deg)"}} top>{meme.topText}</h2>}
-				{meme.url && <h2 className="meme__text" style={{fontSize:meme.width , transform: "rotate("+meme.rotate+"deg)"}} bottom>{meme.bottomText}</h2>}
+				{meme.url && <h2 className="meme__text top" style={{fontSize:meme.width , transform: "rotate("+meme.rotate+"deg)"}} >{meme.topText}</h2>}
+				{meme.url && <h2 className="meme__text bottom" style={{fontSize:meme.width , transform: "rotate("+meme.rotate+"deg)"}} >{meme.bottomText}</h2>}
 			</div>
 		</div>
 	);
