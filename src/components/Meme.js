@@ -31,15 +31,6 @@ export default function Meme() {
 		}));
 	}
 
-	//this is for handling the input
-	function handleChange(event) {
-		const { name, value } = event.target;
-		setMeme((prevMeme) => ({
-			...prevMeme,
-			[name]: value,
-		}));
-	}
-
 	//this is for handling the reset functionality
 	function handleReset() {
 		setMeme({
@@ -50,17 +41,12 @@ export default function Meme() {
 	}
 
 	//this is to handle input change
-	function handleInput1Change(event) {
+	function handleInputChange(event) {
+		const {name, value} = event.target;
 		setMeme( (prevMeme) => ({
 			...prevMeme,
-			topText: event.target.value
-		}));
-	}
-	function handleInput2Change(event) {
-		setMeme( (prevMeme) => ({
-			...prevMeme,
-			bottomText: event.target.value
-		}));
+			[name]: value
+		}) );
 	}
 
 	// this is for uploading the image from the PC
@@ -90,7 +76,7 @@ export default function Meme() {
 					value={meme.topText}
 					placeholder="text1"
 					name="topText"
-					onChange={handleInput1Change}
+					onChange={handleInputChange}
 					/>
 				<input
 					className="form__text"
@@ -98,12 +84,12 @@ export default function Meme() {
 					value={meme.bottomText}
 					placeholder="text2"
 					name="bottomText"
-					onChange={handleInput2Change}
+					onChange={handleInputChange}
 				/>
 				<button className="form__button" onClick={getRandomMeme}>
 					Generate Meme
 				</button>
-				<label for="image-upload" className="form__button upload_image__button">
+				<label htmlFor="image-upload" className="form__button upload_image__button">
 					Upload Meme Image
 				</label>
 				<input accept="image/*" id="image-upload" type="file" onChange={uploadImage} />
@@ -113,8 +99,8 @@ export default function Meme() {
 			</div>
 			<div className="meme">
 				{meme.url && <img className="meme__image" src={meme.url} alt="meme"/>}
-				{meme.url && <h2 className="meme__text">{meme.topText}</h2>}
-				{meme.url && <h2 className="meme__text">{meme.bottomText}</h2>}
+				{meme.url && <h2 className="meme__text top">{meme.topText}</h2>}
+				{meme.url && <h2 className="meme__text bottom">{meme.bottomText}</h2>}
 			</div>
 		</div>
 	);
