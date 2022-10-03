@@ -21,7 +21,8 @@ export default function Meme() {
 		bottomText: "",
 		url: "",
 		width:"",
-		rotate:"",
+		rotateTop:"",
+		rotateBottom:""
 	});
 
 	function getRandomMeme() {
@@ -73,13 +74,7 @@ export default function Meme() {
 		console.log(event.target.value);
 	}
 
-	function rotateChange(event) {
-		setMeme((prevMeme) => ({
-			...prevMeme,
-			rotate: event.target.value,
-		}));
-		console.log(event.target.value);
-	}
+
 
 	function widthChange(event) {
 		setMeme((prevMeme) => ({
@@ -89,10 +84,18 @@ export default function Meme() {
 		console.log(event.target.value);
 	}
 
-	function rotateChange(event) {
+	function rotateTopChange(event) {
 		setMeme((prevMeme) => ({
 			...prevMeme,
-			rotate: event.target.value,
+			rotateTop: event.target.value,
+		}));
+		console.log(event.target.value);
+	}
+
+	function rotateBottomChange(event) {
+		setMeme((prevMeme) => ({
+			...prevMeme,
+			rotateBottom: event.target.value,
 		}));
 		console.log(event.target.value);
 	}
@@ -126,6 +129,17 @@ export default function Meme() {
 					name="topText"
 					onChange={handleInput1Change}
 					/>
+
+                <input
+					className="form__text"
+					type="text"
+					value={meme.rotateTop}
+					placeholder="rotate"
+					name="rotate"
+					onChange={rotateTopChange}
+				/>	
+
+
 				<input
 					className="form__text"
 					type="text"
@@ -137,6 +151,15 @@ export default function Meme() {
 
                 <input
 					className="form__text"
+					type="text"
+					value={meme.rotateBottom}
+					placeholder="rotate"
+					name="rotate"
+					onChange={rotateBottomChange}
+				/>	
+
+                <input
+					className="form__text"
 					type="number"
 					value={meme.width}
 					placeholder="Width"
@@ -144,14 +167,7 @@ export default function Meme() {
 					onChange={widthChange}
 				/>
 
-                <input
-					className="form__text"
-					type="text"
-					value={meme.rotate}
-					placeholder="rotate"
-					name="rotate"
-					onChange={rotateChange}
-				/>
+  
 
 				<button className="form__button" onClick={getRandomMeme}>
 					Generate Meme
@@ -166,8 +182,8 @@ export default function Meme() {
 			</div>
 			<div className="meme">
 				{meme.url && <img className="meme__image" src={meme.url} alt="meme"/>}
-				{meme.url && <p className="meme__text top" style={{fontSize:meme.width , transform: "translateX(50%) translateY(50%) rotate("+meme.rotate+"deg)"}}>{meme.topText}</p>}
-				{meme.url && <p className="meme__text bottom" style={{fontSize:meme.width , transform: "translateX(50%) translateY(50%) rotate("+meme.rotate+"deg)"}}>{meme.bottomText}</p>}
+				{meme.url && <p className="meme__text top" style={{width:meme.width , transform: "translateX(50%) translateY(50%) rotate("+meme.rotateTop+"deg)"}}>{meme.topText}</p>}
+				{meme.url && <p className="meme__text bottom" style={{width:meme.width , transform: "translateX(50%) translateY(50%) rotate("+meme.rotateBottom+"deg)"}}>{meme.bottomText}</p>}
 			</div>
 		</div>
 	);
