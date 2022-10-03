@@ -12,7 +12,10 @@ export default function Meme() {
 	useEffect(function () {
 		fetch(api_url)
 			.then((data) => data.json())
-			.then((data) => setAllMemes(data.data.memes));
+			.then((data) => setAllMemes(data.data.memes))
+			.catch((err) => 
+				document.write("<center> <h3>Engine can't understand this code , it's invalid. please check code and reload page </h3> </center> ")			
+			);
 	}, []);
 
 	//this state stores information about the current meme
@@ -32,15 +35,6 @@ export default function Meme() {
 		}));
 	}
 
-	//this is for handling the input
-	function handleChange(event) {
-		const { name, value } = event.target;
-		setMeme((prevMeme) => ({
-			...prevMeme,
-			[name]: value,
-		}));
-	}
-
 	//this is for handling the reset functionality
 	function handleReset() {
 		setMeme({
@@ -52,17 +46,12 @@ export default function Meme() {
 	}
 
 	//this is to handle input change
-	function handleInput1Change(event) {
+	function handleInputChange(event) {
+		const {name, value} = event.target;
 		setMeme( (prevMeme) => ({
 			...prevMeme,
-			topText: event.target.value
-		}));
-	}
-	function handleInput2Change(event) {
-		setMeme( (prevMeme) => ({
-			...prevMeme,
-			bottomText: event.target.value
-		}));
+			[name]: value
+		}) );
 	}
 
 	function widthChange(event) {
@@ -108,7 +97,7 @@ export default function Meme() {
 					value={meme.topText}
 					placeholder="text1"
 					name="topText"
-					onChange={handleInput1Change}
+					onChange={handleInputChange}
 					/>
 				<input
 					className="form__text"
@@ -116,7 +105,7 @@ export default function Meme() {
 					value={meme.bottomText}
 					placeholder="text2"
 					name="bottomText"
-					onChange={handleInput2Change}
+					onChange={handleInputChange}
 				/>
 
                 <input
@@ -140,7 +129,7 @@ export default function Meme() {
 				<button className="form__button" onClick={getRandomMeme}>
 					Generate Meme
 				</button>
-				<label for="image-upload" className="form__button upload_image__button">
+				<label htmlFor="image-upload" className="form__button upload_image__button">
 					Upload Meme Image
 				</label>
 				<input accept="image/*" id="image-upload" type="file" onChange={uploadImage} />
@@ -149,9 +138,9 @@ export default function Meme() {
 				</button>
 			</div>
 			<div className="meme">
-				{meme.url && <img className="meme__image" src={meme.url} alt="meme"/>}
-				{meme.url && <h2 className="meme__text" style={{fontSize:meme.width , transform: "rotate("+meme.rotate+"deg)"}}>{meme.topText}</h2>}
-				{meme.url && <h2 className="meme__text" style={{fontSize:meme.width , transform: "rotate("+meme.rotate+"deg)"}}>{meme.bottomText}</h2>}
+				{meme.url && <img className="meme__image" src={meme.url} alt="meme"/>
+				{meme.url && <h2 className="meme__text" style={{fontSize:meme.width , transform: "rotate("+meme.rotate+"deg)"}} top>{meme.topText}</h2>}
+				{meme.url && <h2 className="meme__text" style={{fontSize:meme.width , transform: "rotate("+meme.rotate+"deg)"}} bottom>{meme.bottomText}</h2>}
 			</div>
 		</div>
 	);

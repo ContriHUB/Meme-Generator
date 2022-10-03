@@ -50,11 +50,17 @@
     cursor: pointer;
 }
 
+.meme {
+    position: relative;
+}
 
 .meme__image{
-    width: 50%;
+    margin: 0% 50%;
+    transform: translateX(-50%);
     border-color: darkgreen;
     border-width: 5px;
+    width: 50%;
+    object-fit: contain;
 }
 
 /* to remove the default styling of the input field */
@@ -71,7 +77,9 @@ input[type="file"] {
 }
 
 .meme__text {
-    width: 80%;
+    width: 50%;
+    transform: translateX(50%);
+    position: absolute;
     text-align: center;
     font-family: impact, sans-serif;
     font-size: 2em;
@@ -89,4 +97,12 @@ input[type="file"] {
         -2px 0 0 #000,
         2px 2px 5px #000;
     /* z-index: 50; */
+}
+
+.top {
+    top: 5px;
+}
+
+.bottom {
+    bottom: 5px;
 }
