@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import Draggable from "react-draggable";
 
 export default function Meme() {
 	const api_url = "https://api.imgflip.com/get_memes";
@@ -113,8 +114,8 @@ export default function Meme() {
 			</div>
 			<div className="meme">
 				{meme.url && <img className="meme__image" src={meme.url} alt="meme"/>}
-				{meme.url && <h2 className="meme__text">{meme.topText}</h2>}
-				{meme.url && <h2 className="meme__text">{meme.bottomText}</h2>}
+				{meme.url && <Draggable><h2 className="meme__text">{meme.topText}</h2></Draggable>}
+				{meme.url && <Draggable><h2 className="meme__text">{meme.bottomText}</h2></Draggable>}
 			</div>
 		</div>
 	);
