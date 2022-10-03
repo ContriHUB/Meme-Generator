@@ -5,7 +5,6 @@ export default function Meme() {
 	const api_url = "https://api.imgflip.com/get_memes";
 	//this is to store all the meme's url returned by the api
 	const [allMemes, setAllMemes] = useState([]);
-
 	//this function run only once on component load
 	//when this component is mounted on page
 	//it makes call to the api
@@ -21,6 +20,8 @@ export default function Meme() {
 		topText: "",
 		bottomText: "",
 		url: "",
+		width:"",
+		rotate:"",
 	});
 
 	function getRandomMeme() {
@@ -45,7 +46,8 @@ export default function Meme() {
 		setMeme({
 			topText: "",
 			bottomText: "",
-			url: ""
+			url: "",
+			width:"",
 		});
 	}
 
@@ -61,6 +63,22 @@ export default function Meme() {
 			...prevMeme,
 			bottomText: event.target.value
 		}));
+	}
+
+	function widthChange(event) {
+		setMeme((prevMeme) => ({
+			...prevMeme,
+			width: event.target.value
+		}));
+		console.log(event.target.value);
+	}
+
+	function rotateChange(event) {
+		setMeme((prevMeme) => ({
+			...prevMeme,
+			rotate: event.target.value,
+		}));
+		console.log(event.target.value);
 	}
 
 	// this is for uploading the image from the PC
@@ -100,6 +118,25 @@ export default function Meme() {
 					name="bottomText"
 					onChange={handleInput2Change}
 				/>
+
+                <input
+					className="form__text"
+					type="number"
+					value={meme.width}
+					placeholder="Width"
+					name="width"
+					onChange={widthChange}
+				/>
+
+                <input
+					className="form__text"
+					type="text"
+					value={meme.rotate}
+					placeholder="rotate"
+					name="rotate"
+					onChange={rotateChange}
+				/>
+
 				<button className="form__button" onClick={getRandomMeme}>
 					Generate Meme
 				</button>
@@ -113,8 +150,8 @@ export default function Meme() {
 			</div>
 			<div className="meme">
 				{meme.url && <img className="meme__image" src={meme.url} alt="meme"/>}
-				{meme.url && <h2 className="meme__text">{meme.topText}</h2>}
-				{meme.url && <h2 className="meme__text">{meme.bottomText}</h2>}
+				{meme.url && <h2 className="meme__text" style={{fontSize:meme.width , transform: "rotate("+meme.rotate+"deg)"}}>{meme.topText}</h2>}
+				{meme.url && <h2 className="meme__text" style={{fontSize:meme.width , transform: "rotate("+meme.rotate+"deg)"}}>{meme.bottomText}</h2>}
 			</div>
 		</div>
 	);
