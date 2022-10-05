@@ -52,6 +52,7 @@
 
 .meme {
     position: relative;
+    /* border: 2px solid red */
 }
 
 .meme__image{
@@ -77,10 +78,11 @@ input[type="file"] {
 }
 
 .meme__text {
-    width: 50%;
-    transform: translateX(50%);
+    /* width: ; */
+    /* transform: translateX(0%); */
+    /* border: 2px solid red; */
     position: absolute;
-    text-align: center;
+    /* text-align: center; */
     font-family: impact, sans-serif;
     font-size: 2em;
     text-transform: uppercase;
@@ -99,10 +101,10 @@ input[type="file"] {
     /* z-index: 50; */
 }
 
-.top {
+/* .top {
     top: 5px;
 }
 
 .bottom {
     bottom: 5px;
-}
+} */

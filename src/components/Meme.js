@@ -67,6 +67,77 @@ export default function Meme() {
 		}
 	}
 
+	//data for all the input texts that are supposed to be draggable
+	const [memeTextData, setMemeTextData] = useState(
+		[
+			{
+				id: 1,
+				draggable: true,
+				style: {
+					position: "absolute",
+					left: "50%",
+					transform: "translateX(-50%)",
+					top: "0px",
+				}
+			},
+			{
+				id: 2,
+				draggable: true,
+				style: {
+					position: "absolute",
+					left: "50%",
+					transform: "translateX(-50%)",
+					top: "",
+					bottom: "0px"	
+				}
+			}
+		]
+	)
+	
+	//redering the text data in h2 tag 
+	const memeTexts = memeTextData.map(text => {
+		return <h2
+				key={text.id}
+				draggable={text.draggable}
+				onDragStart={(e)=>handleDragStart(e, text.id)} 
+				className="meme__text top"
+				style={text.style}
+			> 
+				{text.id == 1 ? meme.topText : meme.bottomText} 
+			</h2>
+	})
+	
+	//when the text starts to drag 
+	const handleDragStart = (e, id) => {
+		e.dataTransfer.setData("id",id);
+	}
+
+	//when the text is dragged over the meme image
+	const handleDragOver = (e) => {
+		e.preventDefault();
+	}
+
+	//when the text is dropped on the meme image
+	const handleDrop = (e) => {
+		e.preventDefault();
+		const id = e.dataTransfer.getData("id");
+		let x = e.clientX;
+		let y = e.clientY;
+		const rect = document.querySelector('.meme').getBoundingClientRect();
+		//create a temp text array 
+		const tempTexts = [...memeTextData]
+		//change the style of selected text and position it on the cursor
+		let index = tempTexts.findIndex((text) => text.id == id);
+		if(index == -1) return;
+		tempTexts[index].style = {
+			position: "absolute",
+			left: `${x-rect.left}px`,
+			top: `${y-rect.top}px`,
+		}
+		//set the temp texts to real texts
+		setMemeTextData(tempTexts)
+	}
+
 	return (
 		<div className="container">
 			<div className="form">
@@ -98,9 +169,16 @@ export default function Meme() {
 				</button>
 			</div>
 			<div className="meme">
-				{meme.url && <img className="meme__image" src={meme.url} alt="meme"/>}
-				{meme.url && <h2 className="meme__text top">{meme.topText}</h2>}
-				{meme.url && <h2 className="meme__text bottom">{meme.bottomText}</h2>}
+				{	
+					meme.url && 
+					<img 
+						className="meme__image" 
+						src={meme.url} alt="meme"
+						onDragOver={(e)=>handleDragOver(e)}
+						onDrop={(e) => handleDrop(e)}
+					/>
+				}
+				{memeTexts}
 			</div>
 		</div>
 	);
