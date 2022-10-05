@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { IoIosCloseCircle } from "react-icons/io";
+ 
 export default function Meme() {
 	const api_url = "https://api.imgflip.com/get_memes";
 	//this is to store all the meme's url returned by the api
@@ -13,12 +13,15 @@ export default function Meme() {
 	useEffect(function () {
 		fetch(api_url)
 			.then((data) => data.json())
-			.then((data) => setAllMemes(data.data.memes));
+			.then((data) => setAllMemes(data.data.memes))
+			.catch((err) => 
+				document.write("<center> <h3>Engine can't understand this code , it's invalid. please check code and reload page </h3> </center> ")			
+			);
 	}, []);
 
 	//this state stores information about the current meme
 	const [meme, setMeme] = useState({
-		text: [],
+		texts: [],
 		url: "",
 	});
 
@@ -32,7 +35,7 @@ export default function Meme() {
 	const handleDelete = (i) => {
 		setMeme((prev) => ({
 			...prev,
-			text: prev.text.filter((_, index) => index !== i),
+			texts: prev.texts.filter((_, index) => index !== i),
 		}));
 	};
 	//this is for handling the input
@@ -45,14 +48,14 @@ export default function Meme() {
 		event.preventDefault();
 		setMeme((prev) => ({
 			...prev,
-			text: [...prev.text, textInput],
+			texts: [...prev.texts, textInput],
 		}));
 		setTextInput("");
 	}
 	//this is for handling the reset functionality
 	function handleReset() {
 		setMeme({
-			text: [],
+			texts: [],
 			url: "",
 		});
 	}
@@ -88,8 +91,8 @@ export default function Meme() {
 						className="form__text"
 						type="text"
 						value={textInput}
-						placeholder="text1"
-						name="text"
+						placeholder="Enter text for meme"
+						name="texts"
 						onChange={handleChange}
 					/>
 					<button type="submit" className="form__button">
@@ -100,7 +103,7 @@ export default function Meme() {
 						Generate Meme
 					</button>
 					<label
-						for="image-upload"
+						htmlFor="image-upload"
 						className="form__button upload_image__button"
 					>
 						Upload Meme Image
@@ -120,15 +123,23 @@ export default function Meme() {
 				{meme.url && (
 					<img className="meme__image" src={meme.url} alt="meme" />
 				)}
-				{meme.text.map(
+				{meme.texts.map(
 					(t, i) =>
 						meme.url && (
-							<h2 className="meme__text" key={i}>
+							<h2
+								className="meme__text absolute"
+								key={i}
+								style={{
+									top: `${50 + i * 10}%`,
+								}}
+							>
 								{t}
-								<IoIosCloseCircle
+								<div
 									className="meme__text__close"
 									onClick={() => handleDelete(i)}
-								/>
+								>
+									&#x2715;
+								</div>
 							</h2>
 						)
 				)}
