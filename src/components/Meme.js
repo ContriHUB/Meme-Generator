@@ -22,6 +22,27 @@ export default function Meme() {
 		bottomText: "",
 		url: "",
 	});
+	
+	//data for all the input texts that are supposed to be draggable
+	const [memeTextData, setMemeTextData] = useState(
+		[
+			{
+				id: "1",
+				style: {
+					left: "",
+					top: "0px",
+				}
+			},
+			{
+				id: "2",
+				style: {
+					left: "",
+					top: "",
+					bottom: "0px"	
+				}
+			}
+		]
+	)
 
 	function getRandomMeme() {
 		let index = Math.floor(Math.random() * allMemes.length);
@@ -48,7 +69,7 @@ export default function Meme() {
 			[name]: value
 		}) );
 	}
-
+	
 	// this is for uploading the image from the PC
 	function uploadImage(event){
 		let fileURL = event.target.files[0];
@@ -67,43 +88,17 @@ export default function Meme() {
 		}
 	}
 
-	//data for all the input texts that are supposed to be draggable
-	const [memeTextData, setMemeTextData] = useState(
-		[
-			{
-				id: 1,
-				draggable: true,
-				style: {
-					position: "absolute",
-					left: "50%",
-					transform: "translateX(-50%)",
-					top: "0px",
-				}
-			},
-			{
-				id: 2,
-				draggable: true,
-				style: {
-					position: "absolute",
-					left: "50%",
-					transform: "translateX(-50%)",
-					top: "",
-					bottom: "0px"	
-				}
-			}
-		]
-	)
 	
 	//redering the text data in h2 tag 
 	const memeTexts = memeTextData.map(text => {
 		return <h2
 				key={text.id}
-				draggable={text.draggable}
+				draggable
 				onDragStart={(e)=>handleDragStart(e, text.id)} 
-				className="meme__text top"
 				style={text.style}
+				className="meme__text"
 			> 
-				{text.id == 1 ? meme.topText : meme.bottomText} 
+				{text.id === "1" ? meme.topText : meme.bottomText} 
 			</h2>
 	})
 	
@@ -120,18 +115,23 @@ export default function Meme() {
 	//when the text is dropped on the meme image
 	const handleDrop = (e) => {
 		e.preventDefault();
+		//get the id that we set during dragstart
 		const id = e.dataTransfer.getData("id");
+		//get the xy coordinates of the mouse
 		let x = e.clientX;
 		let y = e.clientY;
+		//get the rectangle coordinates of the meme image.
 		const rect = document.querySelector('.meme').getBoundingClientRect();
-		//create a temp text array 
+
+		//create a temp text array to make changes in the style and then set it to original state
 		const tempTexts = [...memeTextData]
 		//change the style of selected text and position it on the cursor
-		let index = tempTexts.findIndex((text) => text.id == id);
+		let index = tempTexts.findIndex((text) => text.id === id);
 		if(index == -1) return;
 		tempTexts[index].style = {
-			position: "absolute",
+			//distance of text from left of image is equal to dist of the cursor from margin - meme image from left.
 			left: `${x-rect.left}px`,
+			//similarly calculate top.
 			top: `${y-rect.top}px`,
 		}
 		//set the temp texts to real texts
