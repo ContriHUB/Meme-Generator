@@ -50,6 +50,21 @@
     cursor: pointer;
 }
 
+/* For the download button */
+
+a{
+    width: 100%;
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px
+}
+
+a, a:hover, a:focus, a:active {
+      text-decoration: none;
+      color: inherit;
+ }
+
 .meme {
     position: relative;
 }
