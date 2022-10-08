@@ -93,6 +93,7 @@ export default function Meme() {
 	const memeTexts = memeTextData.map(text => {
 		return <h2
 				key={text.id}
+				id={text.id}
 				draggable
 				onDragStart={(e)=>handleDragStart(e, text.id)} 
 				style={text.style}
@@ -102,8 +103,13 @@ export default function Meme() {
 			</h2>
 	})
 	
+	//these will be used to calculate the position of the texts while dragging
+	var p1 = 0, p2 = 0, p3 = 0, p4 = 0;
+	
 	//when the text starts to drag 
 	const handleDragStart = (e, id) => {
+		p3 = e.clientX; //left and right distance of the cursor when we start dragging
+		p4 = e.clientY;
 		e.dataTransfer.setData("id",id);
 	}
 
@@ -117,22 +123,21 @@ export default function Meme() {
 		e.preventDefault();
 		//get the id that we set during dragstart
 		const id = e.dataTransfer.getData("id");
-		//get the xy coordinates of the mouse
-		let x = e.clientX;
-		let y = e.clientY;
-		//get the rectangle coordinates of the meme image.
-		const rect = document.querySelector('.meme').getBoundingClientRect();
+		//get the xy coordinates of the mouse when we drop the text
+		p1 = p3 - e.clientX;
+		p2 = p4 - e.clientY;
 
 		//create a temp text array to make changes in the style and then set it to original state
 		const tempTexts = [...memeTextData]
 		//change the style of selected text and position it on the cursor
 		let index = tempTexts.findIndex((text) => text.id === id);
-		if(index == -1) return;
+		if(index === -1) return;
 		tempTexts[index].style = {
-			//distance of text from left of image is equal to dist of the cursor from margin - meme image from left.
-			left: `${x-rect.left}px`,
+			//distance of the dropped text should be equal to the difference between cursor's position 
+			//when it started drag and when it dropped. and subtract the offset of the element from it.
+			left: `${document.getElementById(id).offsetLeft - p1}px`,
 			//similarly calculate top.
-			top: `${y-rect.top}px`,
+			top: `${document.getElementById(id).offsetTop - p2}px`,
 		}
 		//set the temp texts to real texts
 		setMemeTextData(tempTexts)
