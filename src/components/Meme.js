@@ -5,6 +5,7 @@ export default function Meme() {
 	const api_url = "https://api.imgflip.com/get_memes";
 	//this is to store all the meme's url returned by the api
 	const [allMemes, setAllMemes] = useState([]);
+	const [textInput, setTextInput] = useState("");
 
 	//this function run only once on component load
 	//when this component is mounted on page
@@ -13,36 +14,19 @@ export default function Meme() {
 	useEffect(function () {
 		fetch(api_url)
 			.then((data) => data.json())
-			.then((data) => setAllMemes(data.data.memes));
+			.then((data) => setAllMemes(data.data.memes))
+			.catch((err) =>
+				document.write(
+					"<center> <h3>Engine can't understand this code , it's invalid. please check code and reload page </h3> </center> "
+				)
+			);
 	}, []);
 
 	//this state stores information about the current meme
 	const [meme, setMeme] = useState({
-		topText: "",
-		bottomText: "",
+		texts: [],
 		url: "",
 	});
-	
-	//data for all the input texts that are supposed to be draggable
-	const [memeTextData, setMemeTextData] = useState(
-		[
-			{
-				id: "1",
-				style: {
-					left: "",
-					top: "0px",
-				}
-			},
-			{
-				id: "2",
-				style: {
-					left: "",
-					top: "",
-					bottom: "0px"	
-				}
-			}
-		]
-	)
 
 	function getRandomMeme() {
 		let index = Math.floor(Math.random() * allMemes.length);
@@ -53,55 +37,92 @@ export default function Meme() {
 	}
 
 	//this is for handling the reset functionality
+	const handleDelete = (i) => {
+		setMeme((prev) => ({
+			...prev,
+			texts: prev.texts.filter((_, index) => index !== i),
+		}));
+	};
+
+	//this is to handle input change
+	function handleChange(event) {
+		 
+		const { value } = event.target;
+
+		setTextInput(value);
+	}
+	function handleTextSubmit(event) {
+		event.preventDefault();
+		if(textInput.length === 0){
+			return;
+		}
+		//set the texts of the meme
+		const temp = meme.texts;
+		temp.push({
+			text: textInput,
+			style: {
+				left: "",
+				top: `${temp.length*30}px`,
+			}
+		})		
+		setMeme((prev) => ({
+			...prev,
+			texts: temp,
+		}));
+		setTextInput("");
+	}
+	//this is for handling the reset functionality
 	function handleReset() {
 		setMeme({
-			topText: "",
-			bottomText: "",
-			url: ""
+			texts: [],
+			url: "",
 		});
 	}
 
-	//this is to handle input change
-	function handleInputChange(event) {
-		const {name, value} = event.target;
-		setMeme( (prevMeme) => ({
-			...prevMeme,
-			[name]: value
-		}) );
-	}
-	
 	// this is for uploading the image from the PC
-	function uploadImage(event){
+	function uploadImage(event) {
 		let fileURL = event.target.files[0];
 		console.log(event.target.files[0].type);
 		// accepts image in the form of PNG/JPG/JPEG
-		if (event.target.files[0].type === "image/png" || event.target.files[0].type === "image/jpg" || event.target.files[0].type === "image/jpeg"){
+		if (
+			event.target.files[0].type === "image/png" ||
+			event.target.files[0].type === "image/jpg" ||
+			event.target.files[0].type === "image/jpeg"
+		) {
 			setMeme((prev) => ({
 				...prev,
-				url: URL.createObjectURL(fileURL)
-			}))
+				url: URL.createObjectURL(fileURL),
+			}));
 			event.target.value = null;
-		}
-		else{
+		} else {
 			// Alert is shown when there is incorrect file chosen
-			alert("Please upload the image in the correct format (PNG/JPEG/JPG)!")
+			alert(
+				"Please upload the image in the correct format (PNG/JPEG/JPG)!"
+			);
 		}
 	}
 
-	
-	//redering the text data in h2 tag 
-	const memeTexts = memeTextData.map(text => {
-		return <h2
-				key={text.id}
-				id={text.id}
-				draggable
-				onDragStart={(e)=>handleDragStart(e, text.id)} 
-				style={text.style}
-				className="meme__text"
-			> 
-				{text.id === "1" ? meme.topText : meme.bottomText} 
-			</h2>
-	})
+	const memeTexts = meme.texts.map(
+		(t, i) =>
+			meme.url && (
+				<h2
+					className="meme__text absolute"
+					key={i}
+					id={i}
+					draggable
+					onDragStart={(e)=>handleDragStart(e, i)} 
+					style={t.style}
+				>
+					{t.text}
+					<div
+						className="meme__text__close"
+						onClick={() => handleDelete(i)}
+					>
+						&#x2715;
+					</div>
+				</h2>
+			)
+	)
 	
 	//these will be used to calculate the position of the texts while dragging
 	var p1 = 0, p2 = 0, p3 = 0, p4 = 0;
@@ -122,67 +143,71 @@ export default function Meme() {
 	const handleDrop = (e) => {
 		e.preventDefault();
 		//get the id that we set during dragstart
-		const id = e.dataTransfer.getData("id");
+		const id = Number(e.dataTransfer.getData("id"));
 		//relative chane in the mouse position when we drop the text
 		p1 = p3 - e.clientX;
 		p2 = p4 - e.clientY;
 
 		//create a temp text array to make changes in the style and then set it to original state
-		const tempTexts = [...memeTextData]
+		const tempTexts = meme.texts;
 		//change the style of selected text and position it on the cursor
-		let index = tempTexts.findIndex((text) => text.id === id);
-		if(index === -1) return;
-		tempTexts[index].style = {
+		tempTexts[id].style = {
 			//distance of the dropped text should be equal to the difference between cursor's position 
 			//when it started drag and when it dropped. and subtract the offset of the element from it.
-			left: `${document.getElementById(id).offsetLeft - p1}px`,
+			left: `${document.getElementById(String(id)).offsetLeft - p1}px`,
 			//similarly calculate top.
 			top: `${document.getElementById(id).offsetTop - p2}px`,
 		}
-		//set the temp texts to real texts
-		setMemeTextData(tempTexts)
+		//set the temp texts to real texts in the meme state
+		setMeme((prev)=>({
+			...prev,
+			texts: tempTexts
+		}))
 	}
 
 	return (
 		<div className="container">
-			<div className="form">
+			<form className="form" onSubmit={handleTextSubmit}>
 				<input
 					className="form__text"
 					type="text"
-					value={meme.topText}
-					placeholder="text1"
-					name="topText"
-					onChange={handleInputChange}
-					/>
-				<input
-					className="form__text"
-					type="text"
-					value={meme.bottomText}
+					value={textInput}
 					placeholder="text2"
 					name="bottomText"
-					onChange={handleInputChange}
+					onChange={handleChange}
 				/>
+				<button type="submit" className="form__submit__button">
+					Add Text
+				</button>
 				<button className="form__button" onClick={getRandomMeme}>
 					Generate Meme
 				</button>
-				<label htmlFor="image-upload" className="form__button upload_image__button">
+				<label
+					htmlFor="image-upload"
+					className="form__button upload_image__button"
+				>
 					Upload Meme Image
 				</label>
-				<input accept="image/*" id="image-upload" type="file" onChange={uploadImage} />
+				<input
+					accept="image/*"
+					id="image-upload"
+					type="file"
+					onChange={uploadImage}
+				/>
 				<button className="form__button" onClick={handleReset}>
 					Reset Meme
 				</button>
-			</div>
+			</form>
 			<div className="meme">
-				{	
-					meme.url && 
+				{meme.url && (
 					<img 
 						className="meme__image" 
-						src={meme.url} alt="meme"
+						src={meme.url} 
+						alt="meme" 
 						onDragOver={(e)=>handleDragOver(e)}
 						onDrop={(e) => handleDrop(e)}
 					/>
-				}
+				)}
 				{memeTexts}
 			</div>
 		</div>

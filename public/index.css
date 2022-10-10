@@ -30,17 +30,7 @@
     gap: 17px;
     margin-bottom: 20px;
 }
- /* handling the responsive code mobile ,table and laptop device  */
-@media  screen and (max-width:768px){
-    .form{
-        grid-template-columns: 1fr;
-    }
-}
-.form__text{
-    border-radius: 5px;
-}
-
-.form__button{
+.form__button,.form__submit__button{
     background: rgb(6,6,6);
     background: linear-gradient(86deg, rgba(6,6,6,1) 0%, rgba(22,71,35,1) 50%, rgba(31,255,0,1) 100%);
     color: white;
@@ -49,6 +39,25 @@
     border-radius: 5px;
     cursor: pointer;
 }
+.form__submit__button{
+    grid-column:2/2;
+    
+ }
+ /* handling the responsive code mobile ,table and laptop device  */
+@media  screen and (max-width:768px){
+    .form{
+        grid-template-columns: 1fr;
+    }
+      .form__submit__button{
+    grid-column: 1;
+    
+}
+}
+.form__text{
+    border-radius: 5px;
+}
+
+ 
 
 .meme {
     position: relative;
@@ -77,10 +86,10 @@ input[type="file"] {
 }
 
 .meme__text {
-    cursor: pointer;
+    width: fit-content;
+    transform: translateX(50%);
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    text-align: center;
     font-family: impact, sans-serif;
     font-size: 2em;
     text-transform: uppercase;
@@ -98,11 +107,21 @@ input[type="file"] {
         2px 2px 5px #000;
     /* z-index: 50; */
 }
-
-.top {
-    top: 5px;
+.absolute{
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);      
 }
-
-.bottom {
-        bottom: "0px"
+.meme__text__close{
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 20px;
+    color: red;
+    cursor: pointer;
+    display: none;
+}
+.meme__text:hover .meme__text__close{
+    display: block;
 }
