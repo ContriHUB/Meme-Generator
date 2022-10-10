@@ -86,6 +86,7 @@ input[type="file"] {
 }
 
 .meme__text {
+    cursor: pointer;
     width: fit-content;
     transform: translateX(50%);
     position: absolute;

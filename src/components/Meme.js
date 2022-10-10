@@ -47,7 +47,7 @@ export default function Meme() {
 	//this is to handle input change
 	function handleChange(event) {
 		 
-		const { name, value } = event.target;
+		const { value } = event.target;
 
 		setTextInput(value);
 	}
@@ -56,9 +56,18 @@ export default function Meme() {
 		if(textInput.length === 0){
 			return;
 		}
+		//set the texts of the meme
+		const temp = meme.texts;
+		temp.push({
+			text: textInput,
+			style: {
+				left: "",
+				top: `${temp.length*30}px`,
+			}
+		})		
 		setMeme((prev) => ({
 			...prev,
-			texts: [...prev.texts, textInput],
+			texts: temp,
 		}));
 		setTextInput("");
 	}
@@ -91,6 +100,69 @@ export default function Meme() {
 				"Please upload the image in the correct format (PNG/JPEG/JPG)!"
 			);
 		}
+	}
+
+	const memeTexts = meme.texts.map(
+		(t, i) =>
+			meme.url && (
+				<h2
+					className="meme__text absolute"
+					key={i}
+					id={i}
+					draggable
+					onDragStart={(e)=>handleDragStart(e, i)} 
+					style={t.style}
+				>
+					{t.text}
+					<div
+						className="meme__text__close"
+						onClick={() => handleDelete(i)}
+					>
+						&#x2715;
+					</div>
+				</h2>
+			)
+	)
+	
+	//these will be used to calculate the position of the texts while dragging
+	var p1 = 0, p2 = 0, p3 = 0, p4 = 0;
+	
+	//when the text starts to drag 
+	const handleDragStart = (e, id) => {
+		p3 = e.clientX; //left and right distance of the cursor when we start dragging
+		p4 = e.clientY;
+		e.dataTransfer.setData("id",id);
+	}
+
+	//when the text is dragged over the meme image
+	const handleDragOver = (e) => {
+		e.preventDefault();
+	}
+
+	//when the text is dropped on the meme image
+	const handleDrop = (e) => {
+		e.preventDefault();
+		//get the id that we set during dragstart
+		const id = Number(e.dataTransfer.getData("id"));
+		//relative chane in the mouse position when we drop the text
+		p1 = p3 - e.clientX;
+		p2 = p4 - e.clientY;
+
+		//create a temp text array to make changes in the style and then set it to original state
+		const tempTexts = meme.texts;
+		//change the style of selected text and position it on the cursor
+		tempTexts[id].style = {
+			//distance of the dropped text should be equal to the difference between cursor's position 
+			//when it started drag and when it dropped. and subtract the offset of the element from it.
+			left: `${document.getElementById(String(id)).offsetLeft - p1}px`,
+			//similarly calculate top.
+			top: `${document.getElementById(id).offsetTop - p2}px`,
+		}
+		//set the temp texts to real texts in the meme state
+		setMeme((prev)=>({
+			...prev,
+			texts: tempTexts
+		}))
 	}
 
 	return (
@@ -128,28 +200,15 @@ export default function Meme() {
 			</form>
 			<div className="meme">
 				{meme.url && (
-					<img className="meme__image" src={meme.url} alt="meme" />
+					<img 
+						className="meme__image" 
+						src={meme.url} 
+						alt="meme" 
+						onDragOver={(e)=>handleDragOver(e)}
+						onDrop={(e) => handleDrop(e)}
+					/>
 				)}
-				{meme.texts.map(
-					(t, i) =>
-						meme.url && (
-							<h2
-								className="meme__text absolute"
-								key={i}
-								style={{
-									top: `${50 + i * 10}%`,
-								}}
-							>
-								{t}
-								<div
-									className="meme__text__close"
-									onClick={() => handleDelete(i)}
-								>
-									&#x2715;
-								</div>
-							</h2>
-						)
-				)}
+				{memeTexts}
 			</div>
 		</div>
 	);
