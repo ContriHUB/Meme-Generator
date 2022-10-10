@@ -123,7 +123,7 @@ export default function Meme() {
 		e.preventDefault();
 		//get the id that we set during dragstart
 		const id = e.dataTransfer.getData("id");
-		//get the xy coordinates of the mouse when we drop the text
+		//relative chane in the mouse position when we drop the text
 		p1 = p3 - e.clientX;
 		p2 = p4 - e.clientY;
 
