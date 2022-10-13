@@ -7,4 +7,5 @@ Here's to the crazy ones:
 <a href="https://github.com/NeerajChatterjee"><sub><b>Neeraj Chatterjee</b></sub></a>
 <a href="https://github.com/harshN-17"><sub><b>Harsh Narayan</b></sub></a>
 <a href="https://github.com/ManishSheela"><sub><b>Manish Sheela</b></sub></a>
+<a href="https://github.com/always0p"><sub><b>Jaspal singh</b></sub></a>
 
