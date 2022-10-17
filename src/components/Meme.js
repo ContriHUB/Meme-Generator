@@ -141,7 +141,12 @@ export default function Meme() {
 						&nbsp;
 					</div>
 					{/* Adding resize button on bottom right of each text */}
-					<div className="meme__text__resize" onMouseDown={(e) => startResize(e, i)}>&nbsp;</div>
+					<div
+						className="meme__text__resize"
+						onMouseDown={(e) => startResize(e, i)}
+					>
+						&nbsp;
+					</div>
 				</h2>
 			)
 	);
@@ -154,10 +159,11 @@ export default function Meme() {
 
 	//when the text starts to drag
 	const handleDragStart = (e, id) => {
-		if (currRot !== null || currResize !== null) // If any element is being resized or rotated we give it priority
+		if (currRot !== null || currResize !== null)
+			// If any element is being resized or rotated we give it priority
 			textRotAndResize(e);
-		else // Else we move the text
-		{
+		// Else we move the text
+		else {
 			p3 = e.clientX; //left and right distance of the cursor when we start dragging
 			p4 = e.clientY;
 			e.dataTransfer.setData("id", id);
@@ -272,7 +278,7 @@ export default function Meme() {
 			const centerX = l + w / 2;
 			// Now we get the position the same way we did to get the start position, but this time we find the difference between the position
 			// and the start position to find how much resizing we should apply on the text
-			const resizing = (e.clientX-centerX)-resizeStartPos;
+			const resizing = e.clientX - centerX - resizeStartPos;
 			setCurrResizePos(resizing);
 
 			const tempTexts = meme.texts;
@@ -311,7 +317,10 @@ export default function Meme() {
 			const tempTexts = meme.texts;
 			// Adding the total resizing to the current width of the text
 			// Now later when we try to resize the same text, it will start resizing from its current width
-			tempTexts[currResize].currWidth = Math.max(50, tempTexts[currResize].currWidth + currResizePos); // Setting a minumum width for texts
+			tempTexts[currResize].currWidth = Math.max(
+				50,
+				tempTexts[currResize].currWidth + currResizePos
+			); // Setting a minumum width for texts
 			setMeme((prev) => ({
 				...prev,
 				texts: tempTexts,
@@ -340,7 +349,7 @@ export default function Meme() {
 		const centerX = l + w / 2;
 
 		// We get the current position when we start resizing and set it as starting position for resizing
-		setResizeStartPos(e.clientX-centerX);
+		setResizeStartPos(e.clientX - centerX);
 	};
 
 	return (
