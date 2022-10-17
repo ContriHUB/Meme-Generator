@@ -11,6 +11,10 @@ export default function Meme() {
 	const [currRot, setCurrRot] = useState(null); // Stores the id of the current text we are rotating, null if we are not rotating any element
 	const [rotStartAngle, setRotStartAngle] = useState(0); // Stores the starting angle from which we will measure the delta to rotate element
 	const [currRotAngle, setCurrRotAngle] = useState(0); // Stores how much total rotation has occured
+	// state variables involved in resizing of text
+	const [currResize, setCurrResize] = useState(null); // Stores the id of the current text we are resizing, null if we are not resizing any element
+	const [resizeStartPos, setResizeStartPos] = useState(0); // Stores the starting position from which we will measure the delta to resize element
+	const [currResizePos, setCurrResizePos] = useState(0); // Stores how much total resizing has occured
 
 	//this function run only once on component load
 	//when this component is mounted on page
@@ -68,8 +72,10 @@ export default function Meme() {
 				left: "",
 				top: `${temp.length * 30}px`,
 				webkitTransform: "rotate(0deg)", // We will be using this property to rotate the text
+				width: "300px",
 			},
 			currAngle: 0, // Stores the angle the element is currently rotated to
+			currWidth: 300, // Stores the current width of the element
 		});
 		setMeme((prev) => ({
 			...prev,
@@ -117,7 +123,7 @@ export default function Meme() {
 					id={i}
 					draggable
 					onDragStart={(e) => handleDragStart(e, i)}
-					onMouseUp={e => stopRot(e)}
+					onMouseUp={(e) => stopRotAndResize(e)}
 					style={t.style}
 				>
 					{t.text}
@@ -134,6 +140,8 @@ export default function Meme() {
 					>
 						&nbsp;
 					</div>
+					{/* Adding resize button on bottom right of each text */}
+					<div className="meme__text__resize" onMouseDown={(e) => startResize(e, i)}>&nbsp;</div>
 				</h2>
 			)
 	);
@@ -146,9 +154,14 @@ export default function Meme() {
 
 	//when the text starts to drag
 	const handleDragStart = (e, id) => {
-		p3 = e.clientX; //left and right distance of the cursor when we start dragging
-		p4 = e.clientY;
-		e.dataTransfer.setData("id", id);
+		if (currRot !== null || currResize !== null) // If any element is being resized or rotated we give it priority
+			textRotAndResize(e);
+		else // Else we move the text
+		{
+			p3 = e.clientX; //left and right distance of the cursor when we start dragging
+			p4 = e.clientY;
+			e.dataTransfer.setData("id", id);
+		}
 	};
 
 	//when the text is dragged over the meme image
@@ -183,7 +196,7 @@ export default function Meme() {
 		}));
 	};
 
-	// This function gets called whenever we click on the rotate buttons
+	// This function gets called whenever we click on the rotate button
 	const startRot = (e, id) => {
 		e.preventDefault();
 
@@ -201,19 +214,20 @@ export default function Meme() {
 		// Calculating position of center of text
 		const centerX = l + w / 2,
 			centerY = t + h / 2;
-		
+
 		// We are trying to get a starting angle when we start rotating
 		// This is done by finding relative position from center of text and the mouse position and forming the angle
-		setRotStartAngle(R2D * Math.atan2(e.clientY - centerY, e.clientX - centerX));
+		setRotStartAngle(
+			R2D * Math.atan2(e.clientY - centerY, e.clientX - centerX)
+		);
 	};
 
 	// This function gets called when the user moves their mouse after clicking on the rotate button (without leaving mouse)
-	const textRot = e => {
+	const textRotAndResize = (e) => {
 		e.preventDefault();
 
 		// Checking if we are currently rotating any element
-		if (currRot !== null)
-		{
+		if (currRot !== null) {
 			const currRotEl = document.getElementById(currRot);
 
 			const bb = currRotEl.getBoundingClientRect(),
@@ -225,9 +239,11 @@ export default function Meme() {
 			const centerX = l + w / 2,
 				centerY = t + h / 2;
 
-			// Now we get the angle the same we did to get the start angle, but this time we find the difference between the angle
+			// Now we get the angle the same way we did to get the start angle, but this time we find the difference between the angle
 			// and the start angle to find how much rotation we should apply on the text
-			const rotation = R2D * Math.atan2(e.clientY - centerY, e.clientX - centerX) - rotStartAngle;
+			const rotation =
+				R2D * Math.atan2(e.clientY - centerY, e.clientX - centerX) -
+				rotStartAngle;
 			setCurrRotAngle(rotation);
 
 			const tempTexts = meme.texts;
@@ -235,7 +251,38 @@ export default function Meme() {
 				...tempTexts[currRot].style,
 				// Now we apply the rotation on the text
 				// Note that we are adding the rotation to the current angle of the text
-				webkitTransform: `rotate(${tempTexts[currRot].currAngle + rotation}deg)`
+				webkitTransform: `rotate(${
+					tempTexts[currRot].currAngle + rotation
+				}deg)`,
+			};
+			setMeme((prev) => ({
+				...prev,
+				texts: tempTexts,
+			}));
+		}
+		// Checking if we are currently resizing any element
+		else if (currResize !== null) {
+			const currResizeEl = document.getElementById(currResize);
+
+			const bb = currResizeEl.getBoundingClientRect(),
+				l = bb.left,
+				w = bb.width;
+
+			// Calculating position of center of text
+			const centerX = l + w / 2;
+			// Now we get the position the same way we did to get the start position, but this time we find the difference between the position
+			// and the start position to find how much resizing we should apply on the text
+			const resizing = (e.clientX-centerX)-resizeStartPos;
+			setCurrResizePos(resizing);
+
+			const tempTexts = meme.texts;
+			tempTexts[currResize].style = {
+				...tempTexts[currResize].style,
+				// Now we apply the resizing on the text
+				// Note that we are adding the resizing to the current width of the text
+				width: `${
+					Math.max(50, tempTexts[currResize].currWidth + resizing) // Setting a minumum width for texts
+				}px`,
 			};
 			setMeme((prev) => ({
 				...prev,
@@ -245,12 +292,11 @@ export default function Meme() {
 	};
 
 	// This function gets called when the user releases mouse on the meme image
-	// The purpose of this function is to stop rotating text
-	const stopRot = (e) => {
+	// The purpose of this function is to stop rotating text or resizing the text
+	const stopRotAndResize = (e) => {
 		e.preventDefault();
 
-		if (currRot !== null)
-		{
+		if (currRot !== null) {
 			const tempTexts = meme.texts;
 			// Adding the rotation to the current angle of the text
 			// Now later when we try to rotate the same text, it will start rotating from its current angle
@@ -261,8 +307,40 @@ export default function Meme() {
 			}));
 		}
 
+		if (currResize !== null) {
+			const tempTexts = meme.texts;
+			// Adding the total resizing to the current width of the text
+			// Now later when we try to resize the same text, it will start resizing from its current width
+			tempTexts[currResize].currWidth = Math.max(50, tempTexts[currResize].currWidth + currResizePos); // Setting a minumum width for texts
+			setMeme((prev) => ({
+				...prev,
+				texts: tempTexts,
+			}));
+		}
+
 		// Setting currRot to null since we aren't rotating any text
 		setCurrRot(null);
+		// Setting currResize to null since we aren't resizing any text
+		setCurrResize(null);
+	};
+
+	// This function gets called whenever we click on the resize button
+	const startResize = (e, id) => {
+		e.preventDefault();
+
+		setCurrResize(id);
+
+		const currResizeEl = document.getElementById(id);
+
+		const bb = currResizeEl.getBoundingClientRect(),
+			l = bb.left,
+			w = bb.width;
+
+		// Calculating position of center of text
+		const centerX = l + w / 2;
+
+		// We get the current position when we start resizing and set it as starting position for resizing
+		setResizeStartPos(e.clientX-centerX);
 	};
 
 	return (
@@ -306,8 +384,8 @@ export default function Meme() {
 						alt="meme"
 						onDragOver={(e) => handleDragOver(e)}
 						onDrop={(e) => handleDrop(e)}
-						onMouseMove={e => textRot(e)}
-						onMouseUp={e => stopRot(e)}
+						onMouseMove={(e) => textRotAndResize(e)}
+						onMouseUp={(e) => stopRotAndResize(e)}
 					/>
 				)}
 				{memeTexts}
