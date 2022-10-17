@@ -126,3 +126,10 @@ input[type="file"] {
 .meme__text:hover .meme__text__close{
     display: block;
 }
+.meme__text__rotate{
+    position: absolute;
+    bottom: -15px;
+    left: -12px;
+    font-size: 20px;
+    cursor: grab;
+}
