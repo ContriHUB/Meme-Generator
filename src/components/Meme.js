@@ -7,9 +7,10 @@ export default function Meme() {
 	//this is to store all the meme's url returned by the api
 	const [allMemes, setAllMemes] = useState([]);
 	const [textInput, setTextInput] = useState("");
-	const [currRot, setCurrRot] = useState(null);
-	const [rotStartAngle, setRotStartAngle] = useState(0);
-	const [currRotAngle, setCurrRotAngle] = useState(0);
+	// state variables involved in rotation of text
+	const [currRot, setCurrRot] = useState(null); // Stores the id of the current text we are rotating, null if we are not rotating any element
+	const [rotStartAngle, setRotStartAngle] = useState(0); // Stores the starting angle from which we will measure the delta to rotate element
+	const [currRotAngle, setCurrRotAngle] = useState(0); // Stores how much total rotation has occured
 
 	//this function run only once on component load
 	//when this component is mounted on page
@@ -66,9 +67,9 @@ export default function Meme() {
 			style: {
 				left: "",
 				top: `${temp.length * 30}px`,
-				webkitTransform: "rotate(0deg)",
+				webkitTransform: "rotate(0deg)", // We will be using this property to rotate the text
 			},
-			currAngle: 0,
+			currAngle: 0, // Stores the angle the element is currently rotated to
 		});
 		setMeme((prev) => ({
 			...prev,
@@ -125,6 +126,7 @@ export default function Meme() {
 					>
 						&#x2715;
 					</div>
+					{/* Adding rotate button on bottom left of each text */}
 					<div
 						className="meme__text__rotate"
 						onMouseDown={(e) => startRot(e, i)}
@@ -180,9 +182,11 @@ export default function Meme() {
 		}));
 	};
 
+	// This function gets called whenever we click on the rotate buttons
 	const startRot = (e, id) => {
 		e.preventDefault();
 
+		// Since we want to rotate the current element, we will set it's id as currRot
 		setCurrRot(id);
 
 		const currRotEl = document.getElementById(id);
@@ -193,16 +197,22 @@ export default function Meme() {
 			h = bb.height,
 			w = bb.width;
 
+		// Calculating position of center of text
 		const centerX = l + w / 2,
 			centerY = t + h / 2;
+		
+		// We are trying to get a starting angle when we start rotating
+		// This is done by finding relative position from center of text and the mouse position and forming the angle
 		setRotStartAngle(R2D * Math.atan2(e.clientY - centerY, e.clientX - centerX));
 	};
 
+	// This function gets called when the user moves their mouse after clicking on the rotate button (without leaving mouse)
 	const textRot = e => {
-		if (currRot != null)
-		{
-			e.preventDefault();
+		e.preventDefault();
 
+		// Checking if we are currently rotating any element
+		if (currRot !== null)
+		{
 			const currRotEl = document.getElementById(currRot);
 
 			const bb = currRotEl.getBoundingClientRect(),
@@ -214,12 +224,16 @@ export default function Meme() {
 			const centerX = l + w / 2,
 				centerY = t + h / 2;
 
+			// Now we get the angle the same we did to get the start angle, but this time we find the difference between the angle
+			// and the start angle to find how much rotation we should apply on the text
 			const rotation = R2D * Math.atan2(e.clientY - centerY, e.clientX - centerX) - rotStartAngle;
 			setCurrRotAngle(rotation);
 
 			const tempTexts = meme.texts;
 			tempTexts[currRot].style = {
 				...tempTexts[currRot].style,
+				// Now we apply the rotation on the text
+				// Note that we are adding the rotation to the current angle of the text
 				webkitTransform: `rotate(${tempTexts[currRot].currAngle + rotation}deg)`
 			};
 			setMeme((prev) => ({
@@ -229,16 +243,24 @@ export default function Meme() {
 		}
 	};
 
+	// This function gets called when the user releases mouse on the meme image
+	// The purpose of this function is to stop rotating text
 	const stopRot = (e) => {
 		e.preventDefault();
 
-		const tempTexts = meme.texts;
-		tempTexts[currRot].currAngle += currRotAngle;
-		setMeme((prev) => ({
-			...prev,
-			texts: tempTexts,
-		}));
+		if (currRot !== null)
+		{
+			const tempTexts = meme.texts;
+			// Adding the rotation to the current angle of the text
+			// Now later when we try to rotate the same text, it will start rotating from its current angle
+			tempTexts[currRot].currAngle += currRotAngle;
+			setMeme((prev) => ({
+				...prev,
+				texts: tempTexts,
+			}));
+		}
 
+		// Setting currRot to null since we aren't rotating any text
 		setCurrRot(null);
 	};
 
