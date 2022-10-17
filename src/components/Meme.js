@@ -117,6 +117,7 @@ export default function Meme() {
 					id={i}
 					draggable
 					onDragStart={(e) => handleDragStart(e, i)}
+					onMouseUp={e => stopRot(e)}
 					style={t.style}
 				>
 					{t.text}
